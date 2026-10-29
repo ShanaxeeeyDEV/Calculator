@@ -1,0 +1,244 @@
+﻿@page "/"
+@page "/login"
+@rendermode InteractiveServer
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="login-container">
+    <div class="glow-sphere glow-sphere-1"></div>
+    <div class="glow-sphere glow-sphere-2"></div>
+
+    <div class="login-card-wrapper animate-fade-in">
+        <div class="text-center mb-4">
+            <div class="brand-icon-wrapper mb-3 shadow">
+                <i class="bi bi-code-slash text-white fs-4"></i>
+            </div>
+            <h1 class="h4 fw-bold text-white tracking-tight mb-1">Painel de Acesso</h1>
+            <p class="text-muted small">Entre com suas credenciais corporativas</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_output))
+        {
+            <div class="alert custom-alert d-flex align-items-center mb-4 p-3 rounded-3" role="alert">
+                <i class="bi bi-exclamation-circle-fill text-danger fs-5 me-2"></i>
+                <div class="small text-danger fw-medium">@_output</div>
+                <button type="button" class="btn-close btn-close-white ms-auto small opacity-75" @onclick="() => _output = null"></button>
+            </div>
+        }
+
+        <EditForm Model="@_login" OnValidSubmit="LoginHandler">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label for="email" class="form-label text-uppercase text-secondary fw-semibold tracking-wider" style="font-size: 0.7rem;">E-mail Corporativo</label>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text ps-3">
+                        <i class="bi bi-envelope-at"></i>
+                    </span>
+                    <InputText id="email"
+                               class="form-control shadow-none custom-input"
+                               @bind-Value="_login.Email"
+                               placeholder="nome@empresa.com" />
+                </div>
+                <ValidationMessage For="@(() => _login.Email)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label for="password" class="form-label text-uppercase text-secondary fw-semibold tracking-wider mb-1" style="font-size: 0.7rem;">Senha</label>
+                </div>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text ps-3">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <InputText id="password"
+                               type="password"
+                               class="form-control shadow-none custom-input"
+                               @bind-Value="_login.Password"
+                               placeholder="••••••••••••" />
+                </div>
+                <ValidationMessage For="@(() => _login.Password)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="mb-4 d-flex align-items-center justify-content-between">
+                <div class="form-check custom-checkbox">
+                    <InputCheckbox id="rememberMe" class="form-check-input shadow-none" @bind-Value="_login.RememberMe" />
+                    <label class="form-check-label text-muted small user-select-none cursor-pointer" for="rememberMe">Lembrar deste dispositivo</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold rounded-3 shadow-sm btn-action transition">
+                <span>Acessar Sistema</span>
+                <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+        </EditForm>
+
+        <div class="text-center mt-4 pt-3 border-top border-dark border-opacity-50">
+            <p class="text-muted small mb-0">
+                Não tem uma conta? <a href="/sign" class="text-light text-decoration-none fw-medium hover-underline">Crie uma agora!</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #f8fafc;
+    }
+
+    .login-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        overflow: hidden;
+    }
+
+    /* Removidas as esferas escuras (glow-sphere) para manter o fundo limpo */
+    .glow-sphere {
+        display: none;
+    }
+
+    .login-card-wrapper {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 420px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 40px 36px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .brand-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto;
+        background: #0f172a;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    /* Ajuste de cores de texto do cabeçalho para o tema claro */
+    .login-card-wrapper h1 {
+        color: #0f172a !important;
+    }
+
+    .login-card-wrapper p {
+        color: #64748b !important;
+    }
+
+    .input-group-custom {
+        background-color: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+        .input-group-custom .input-group-text {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+        }
+
+        .input-group-custom .custom-input {
+            background: transparent !important;
+            border: none !important;
+            color: #0f172a !important;
+            padding: 11px 14px;
+            font-size: 0.9rem;
+        }
+
+            .input-group-custom .custom-input::placeholder {
+                color: #94a3b8;
+            }
+
+        .input-group-custom:focus-within {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+            background-color: #ffffff;
+        }
+
+            .input-group-custom:focus-within .input-group-text {
+                color: #0f172a;
+            }
+
+    /* Correção do autofill para fundo claro */
+    .custom-input:-webkit-autofill,
+    .custom-input:-webkit-autofill:hover,
+    .custom-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #0f172a !important;
+        -webkit-box-shadow: 0 0 0px 1000px #f8fafc inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .custom-checkbox .form-check-input {
+        background-color: #f8fafc;
+        border-color: #cbd5e1;
+        width: 1.1em;
+        height: 1.1em;
+        cursor: pointer;
+    }
+
+        .custom-checkbox .form-check-input:checked {
+            background-color: #0f172a;
+            border-color: #0f172a;
+        }
+
+    .custom-checkbox .form-check-label {
+        color: #64748b !important;
+    }
+
+    .btn-action {
+        background: #0f172a !important;
+        border: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+        .btn-action:hover {
+            background: #1e293b !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2) !important;
+        }
+
+    .custom-alert {
+        background-color: #fef2f2;
+        border: 1px solid #fee2e2;
+    }
+
+    .border-dark {
+        border-color: #e2e8f0 !important;
+    }
+
+    .text-muted {
+        color: #64748b !important;
+    }
+
+    .text-light {
+        color: #0f172a !important;
+    }
+
+    .transition {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .hover-underline:hover {
+        text-decoration: underline !important;
+    }
+</style>

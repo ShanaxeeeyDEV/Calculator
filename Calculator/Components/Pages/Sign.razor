@@ -1,0 +1,227 @@
+﻿@page "/sign"
+@rendermode InteractiveServer
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="login-container">
+    <div class="glow-sphere glow-sphere-1"></div>
+    <div class="glow-sphere glow-sphere-2"></div>
+
+    <div class="login-card-wrapper animate-fade-in">
+        <div class="text-center mb-4">
+            <div class="brand-icon-wrapper mb-3 shadow">
+                <i class="bi bi-person-plus-fill text-white fs-4"></i>
+            </div>
+            <h1 class="h4 fw-bold text-white tracking-tight mb-1">Criar sua Conta</h1>
+            <p class="text-muted small">Preencha os dados para iniciar seu acesso</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_output))
+        {
+            <div class="alert custom-alert d-flex align-items-center mb-4 p-3 rounded-3" role="alert">
+                <i class="bi bi-exclamation-circle-fill text-danger fs-5 me-2"></i>
+                <div class="small text-danger fw-medium">@_output</div>
+                <button type="button" class="btn-close btn-close-white ms-auto small opacity-75" @onclick="() => _output = null"></button>
+            </div>
+        }
+
+        <EditForm Model="@_sign" OnValidSubmit="SignHandler">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label for="email" class="form-label text-uppercase text-secondary fw-semibold tracking-wider" style="font-size: 0.7rem;">E-mail Corporativo</label>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text ps-3">
+                        <i class="bi bi-envelope-at"></i>
+                    </span>
+                    <InputText id="email"
+                               class="form-control shadow-none custom-input"
+                               @bind-Value="_sign.Email"
+                               placeholder="nome@empresa.com" />
+                </div>
+                <ValidationMessage For="@(() => _sign.Email)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label text-uppercase text-secondary fw-semibold tracking-wider mb-1" style="font-size: 0.7rem;">Senha</label>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text ps-3">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <InputText id="password"
+                               type="password"
+                               class="form-control shadow-none custom-input"
+                               @bind-Value="_sign.Password"
+                               placeholder="••••••••••••" />
+                </div>
+                <ValidationMessage For="@(() => _sign.Password)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="mb-4">
+                <label for="confirmPassword" class="form-label text-uppercase text-secondary fw-semibold tracking-wider mb-1" style="font-size: 0.7rem;">Confirmar Senha</label>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text ps-3">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+                    <InputText id="confirmPassword"
+                               type="password"
+                               class="form-control shadow-none custom-input"
+                               @bind-Value="_sign.ConfirmPassword"
+                               placeholder="••••••••••••" />
+                </div>
+                <ValidationMessage For="@(() => _sign.ConfirmPassword)" class="text-danger small mt-1" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold rounded-3 shadow-sm btn-action transition">
+                <span>Cadastrar Conta</span>
+                <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+        </EditForm>
+
+        <div class="text-center mt-4 pt-3 border-top border-dark border-opacity-50">
+            <p class="text-muted small mb-0">
+                Já possui uma conta? <a href="/login" class="text-light text-decoration-none fw-medium hover-underline">Faça login</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .login-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #0a0c10;
+        overflow: hidden;
+    }
+
+    .glow-sphere {
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        border-radius: 50%;
+        filter: blur(120px);
+        z-index: 1;
+        opacity: 0.15;
+        pointer-events: none;
+    }
+
+    .glow-sphere-1 {
+        top: -10%;
+        left: -10%;
+        background-color: #3b82f6;
+    }
+
+    .glow-sphere-2 {
+        bottom: -10%;
+        right: -10%;
+        background-color: #8b5cf6;
+    }
+
+    .login-card-wrapper {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 440px;
+        background: rgba(22, 27, 34, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 40px 36px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    .brand-icon-wrapper {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.4);
+    }
+
+    .input-group-custom {
+        background-color: #0d1117;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+        .input-group-custom .input-group-text {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+        }
+
+        .input-group-custom .custom-input {
+            background: transparent !important;
+            border: none !important;
+            color: #f0f6fc !important;
+            padding: 12px 14px;
+            font-size: 0.9rem;
+        }
+
+            .input-group-custom .custom-input::placeholder {
+                color: #484f58;
+            }
+
+        .input-group-custom:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background-color: #050709;
+        }
+
+            .input-group-custom:focus-within .input-group-text {
+                color: #3b82f6;
+            }
+
+    .custom-input:-webkit-autofill, .custom-input:-webkit-autofill:hover, .custom-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #f0f6fc !important;
+        -webkit-box-shadow: 0 0 0px 1000px #0d1117 inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .btn-action {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+        font-size: 0.95rem;
+        letter-spacing: -0.01em;
+        transition: all 0.2s ease;
+    }
+
+        .btn-action:hover {
+            background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.5) !important;
+        }
+
+    .custom-alert {
+        background-color: rgba(248, 81, 73, 0.1);
+        border: 1px solid rgba(248, 81, 73, 0.3);
+    }
+
+    .transition {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .hover-underline:hover {
+        text-decoration: underline !important;
+    }
+</style>
